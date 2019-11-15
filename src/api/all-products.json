@@ -1,0 +1,9 @@
+[
+  { "id": 1, "title": "Sport Watch", "price": 600 },
+  { "id": 2, "title": "Starpunks Coffee Cup", "price": 500 },
+  { "id": 3, "title": "eSport Mouse", "price": 1590 },
+  { "id": 4, "title": "Cherry Keyboard", "price": 2499 },
+  { "id": 5, "title": "AKG Microphone", "price": 1950 },
+  { "id": 6, "title": "HDMI Splitter", "price": 400 },
+  { "id": 7, "title": "Normal Pen", "price": 16 }
+]

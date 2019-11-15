@@ -1,0 +1,14 @@
+@mixin abs-height($x) {
+  max-height: $x;
+  min-height: $x;
+}
+
+@mixin abs-width($x) {
+  max-width: $x;
+  min-width: $x;
+}
+
+@mixin abs-square($x) {
+  @include abs-height($x);
+  @include abs-width($x);
+}
