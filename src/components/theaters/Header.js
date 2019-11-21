@@ -2,7 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { ReactComponent as CartSVG } from '../../images/svg/shopping-cart.svg'
 
-const Header = () => {
+const Header = props => {
+  const productsInStock = props.cart
+    .map(order => (order.qty ? order.qty : 0))
+    .reduce((a, b) => a + b, 0)
+
   return (
     <header className="header">
       <div>
@@ -15,10 +19,17 @@ const Header = () => {
         {/* <div className="header__search">search</div> */}
         <div className="header__cart">
           <CartSVG />
+          <div className={productsInStock ? 'not-empty' : null}>
+            {productsInStock}
+          </div>
         </div>
       </div>
     </header>
   )
 }
 
-export default connect()(Header)
+const mapStateToProps = state => {
+  return { cart: state.cart }
+}
+
+export default connect(mapStateToProps)(Header)

@@ -1,29 +1,39 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 const QtyControl = props => {
-  const { qty: initialQty, onQtyChange } = props
-  const [qty, setQty] = useState(initialQty)
+  const { id, qty, min = 1, max = 100, onQtyChange } = props
 
   const minus = evt => {
     evt.preventDefault()
-    if (qty > 1) {
-      onQtyChange(qty - 1)
-    } else {
-      console.log('min:1')
-    }
+    qty > min ? onQtyChange(id, qty - 1) : console.log(`min:${min}`)
   }
   const plus = evt => {
     evt.preventDefault()
-    qty < 100 ? setQty(qty + 1) : console.log('max:100')
+    qty < max ? onQtyChange(id, qty + 1) : console.log(`max:${max}`)
   }
-  const mouseDownHandler = async () => {
-    await console.log('press')
+  const directInputHandler = evt => {
+    const { value } = evt.target
+    // 預防value是String和非整數的情況
+    const qty = Number.parseInt(value)
+    // console.log(qty)
+    qty >= min && qty <= max
+      ? onQtyChange(id, qty)
+      : qty < min || isNaN(qty)
+      ? onQtyChange(id, min)
+      : onQtyChange(id, max)
   }
 
   return (
     <>
-      <button className="btn--minus" onClick={minus} onMouseDown={mouseDownHandler}></button>
-      <input className="input--qty" type="number" min="1" max="100" value={qty} onChange={onQtyChange.bind(this, qty)} />
+      <button className="btn--minus" onClick={minus}></button>
+      <input
+        className="input--qty"
+        type="number"
+        min={min}
+        max={max}
+        value={qty}
+        onChange={directInputHandler}
+      />
       <button className="btn--plus" onClick={plus}></button>
     </>
   )

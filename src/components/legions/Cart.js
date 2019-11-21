@@ -1,49 +1,44 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
-import QtyControl from '../crews/QtyControl'
+import { updateShipping } from '../../actions'
+import Order from '../groups/Order'
 
 const computeTotal = arr => {
-  const subtotals = arr.map(({ subtotal }) => subtotal)
-  return subtotals.reduce((a, b) => a + b)
+  // console.log(arr)
+  const subtotals = arr.map(({ price, qty }) => price * qty)
+  return subtotals.reduce((a, b) => a + b, 0)
 }
 
-const Cart = ({ cart, order, products }) => {
+const Cart = ({ cart, products, shipping, updateShipping }) => {
   // 關聯表合併
-  const cartDetail = cart.map(({ id, qty }) => {
+  const cartDetail = cart.map(({ id, qty, tag }) => {
     const detail = products.find(elem => id === elem.id)
-    return { ...detail, qty, subtotal: detail.price * qty }
+    return { ...detail, qty, tag }
   })
   // 總金額設定
-  const [total, setTotal] = useState(computeTotal(cartDetail))
+  const total = computeTotal(cartDetail)
 
+  // 列出所有cart上的商品
   const list = arr =>
-    arr.map(({ id, title, price, qty }) => {
-      title = title ? title : 'Some Tea'
-      price = price > 0 ? price : 0
-      // 單品數量最低1，最高100
-      qty = qty > 0 && qty <= 100 ? Math.floor(qty) : 1
-      // notes = notes ? notes : ''
-      const subtotal = qty * price
-      const onQtyChange = value => {
-        console.log(value)
-      }
-
+    arr.map(({ id, title, price, qty, tag }) => {
       return (
-        <div key={id} className="order">
-          <button className="order__remove" onClick={() => console.log()}></button>
-          <h3 className="order__name">{title}</h3>
-          <span className="order__price">${price}</span>
-          <div className="order__qty-control">
-            <QtyControl qty={qty} onQtyChange={onQtyChange} />
-          </div>
-          <textarea className="order__notes"></textarea>
-          <div className="order__count">
-            ${price} x {qty}
-          </div>
-          <div className="order__subtotal">${subtotal}</div>
-        </div>
+        <Order
+          key={id}
+          id={id}
+          title={title}
+          price={price}
+          qty={qty}
+          tag={tag}
+        />
       )
     })
+
+  //
+  const onShippingChange = evt => {
+    evt.preventDefault()
+    const { value } = evt.target
+    updateShipping(value)
+  }
 
   return (
     <div className="cart">
@@ -54,12 +49,31 @@ const Cart = ({ cart, order, products }) => {
       </div>
 
       <div className="cart__body">{list(cartDetail)}</div>
+
+      <div className="cart__foot">
+        <label for="shipping-select">Shipping Option: </label>
+        <select
+          name="shipping-select"
+          onChange={onShippingChange}
+          required
+        >
+          <option value="" selected disabled hidden>
+            --Please choose an option--
+          </option>
+          <option value="7-11">7-11 </option>
+          <option value="FAMILY">FamilyMart</option>
+          <option value="HILIFE">Hi-Life</option>
+          <option value="OK">OK Mart</option>
+          <option value="POST">Postal</option>
+          <option value="BLACKCAT">Takkyubin</option>
+        </select>
+      </div>
     </div>
   )
 }
 
-const mapStateToProps = ({ cart, order, products }) => {
-  return { cart, order, products }
+const mapStateToProps = state => {
+  return { ...state }
 }
 
-export default connect(mapStateToProps)(Cart)
+export default connect(mapStateToProps, { updateShipping })(Cart)

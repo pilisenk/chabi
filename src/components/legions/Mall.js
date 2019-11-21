@@ -1,12 +1,25 @@
 import React from 'react'
+import { connect } from 'react-redux'
+
 import Product from '../groups/Product'
 
-const Mall = ({ products, addProducts }) => {
-  const productList = arr => {
-    return arr.map(elem => <Product key={elem.id} title={elem.title} price={elem.price} />)
-  }
+const Mall = props => {
+  const { products } = props
+  const productList = products.map(elem => (
+    <Product
+      key={elem.id}
+      id={elem.id}
+      title={elem.title}
+      price={elem.price}
+      qty={elem.qty}
+    />
+  ))
 
-  return <div className="mall">{productList(products)}</div>
+  return <div className="mall">{productList}</div>
 }
 
-export default Mall
+const mapStateToProps = ({ products }) => {
+  return { products }
+}
+
+export default connect(mapStateToProps)(Mall)

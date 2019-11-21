@@ -1,29 +1,45 @@
-export const addProducts = (id, qty) => {
+export const updateProductsQty = (id, qty) => {
   return {
-    type: 'ADD_PRODUCTS',
+    type: 'UPDATE_PRODUCTS_QTY',
     id,
     qty
   }
 }
 
-export const updateProducts = (id, qty) => {
+export const addProductsToOrder = (id, qty) => {
   return {
-    type: 'UPDATE_PRODUCTS',
+    type: 'ADD_PRODUCTS_TO_ORDER',
     id,
     qty
   }
 }
 
-export const deleteProducts = id => {
+export const updateOrderQty = (id, qty) => {
   return {
-    type: 'DELETE_PRODUCTS',
+    type: 'UPDATE_ORDER_QTY',
+    id,
+    qty
+  }
+}
+
+export const updateOrderTag = (id, tag) => {
+  return {
+    type: 'UPDATE_ORDER_TAG',
+    id,
+    tag
+  }
+}
+
+export const deleteOrder = id => {
+  return {
+    type: 'DELETE_ORDER',
     id
   }
 }
 
-export const setDistribution = distribution => {
+export const updateShipping = shipping => {
   return {
-    type: 'SET_DISTRIBUTION',
-    distribution
+    type: 'UPDATE_SHIPPING',
+    shipping
   }
 }
