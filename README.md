@@ -3,5 +3,5 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Quick Start
   ```
   npm i
-  yarn start
+  npm start
   ```
