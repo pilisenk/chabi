@@ -29,9 +29,7 @@ const cart = (cart = null, action) => {
 
   switch (action.type) {
     case 'ADD_PRODUCTS_TO_ORDER':
-      const existedIndex = cart.findIndex(
-        order => action.id === order.id
-      )
+      const existedIndex = cart.findIndex(order => action.id === order.id)
       //設置門檻max為最大值，不可超過
       const equalAndNotExceed = (x, y) => {
         const max = 100
@@ -56,7 +54,7 @@ const cart = (cart = null, action) => {
         return order.id !== action.id
           ? order
           : {
-              id: action.id,
+              ...order,
               qty: action.qty
             }
       })
@@ -65,7 +63,7 @@ const cart = (cart = null, action) => {
         return order.id !== action.id
           ? order
           : {
-              id: action.id,
+              ...order,
               tag: action.tag
             }
       })
@@ -76,9 +74,7 @@ const cart = (cart = null, action) => {
   }
 }
 
-const shipping = (shipping = null, action) => {
-  if (!shipping) return { shipping: '' }
-
+const shipping = (shipping = '', action) => {
   switch (action.type) {
     case 'UPDATE_SHIPPING':
       return { shipping: action.shipping }

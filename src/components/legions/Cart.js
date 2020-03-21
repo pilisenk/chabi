@@ -1,43 +1,44 @@
-import React from 'react'
-import { connect } from 'react-redux'
+import React, { useMemo } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { updateShipping } from '../../actions'
 import Order from '../groups/Order'
 
 const computeTotal = arr => {
-  // console.log(arr)
   const subtotals = arr.map(({ price, qty }) => price * qty)
   return subtotals.reduce((a, b) => a + b, 0)
 }
 
-const Cart = ({ cart, products, shipping, updateShipping }) => {
+const Cart = () => {
+  const dispatch = useDispatch()
+  const [cart, products, shipping] = useSelector(state => [
+    state.cart,
+    state.products,
+    state.shipping
+  ])
+
   // 關聯表合併
-  const cartDetail = cart.map(({ id, qty, tag }) => {
-    const detail = products.find(elem => id === elem.id)
-    return { ...detail, qty, tag }
-  })
+  const cartDetail = useMemo(
+    () =>
+      cart.map(({ id, qty, tag }) => {
+        const detail = products.find(elem => id === elem.id)
+        return { ...detail, qty, tag }
+      }),
+    [cart, products]
+  )
   // 總金額設定
-  const total = computeTotal(cartDetail)
+  const total = useMemo(() => computeTotal(cartDetail), [cartDetail])
 
   // 列出所有cart上的商品
-  const list = arr =>
-    arr.map(({ id, title, price, qty, tag }) => {
-      return (
-        <Order
-          key={id}
-          id={id}
-          title={title}
-          price={price}
-          qty={qty}
-          tag={tag}
-        />
-      )
-    })
+  const orderList = useMemo(
+    () => cartDetail.map(item => <Order key={item.id} {...item} />),
+    [cartDetail]
+  )
 
   //
   const onShippingChange = evt => {
     evt.preventDefault()
     const { value } = evt.target
-    updateShipping(value)
+    dispatch(updateShipping(value))
   }
 
   return (
@@ -48,16 +49,17 @@ const Cart = ({ cart, products, shipping, updateShipping }) => {
         <button className="cart__button--buy">BUY</button>
       </div>
 
-      <div className="cart__body">{list(cartDetail)}</div>
+      <div className="cart__body">{orderList}</div>
 
       <div className="cart__foot">
-        <label for="shipping-select">Shipping Option: </label>
+        <label htmlFor="shipping-select">Shipping Option: </label>
         <select
           name="shipping-select"
+          value={shipping}
           onChange={onShippingChange}
           required
         >
-          <option value="" selected disabled hidden>
+          <option value="" disabled hidden>
             --Please choose an option--
           </option>
           <option value="7-11">7-11 </option>
@@ -72,8 +74,4 @@ const Cart = ({ cart, products, shipping, updateShipping }) => {
   )
 }
 
-const mapStateToProps = state => {
-  return { ...state }
-}
-
-export default connect(mapStateToProps, { updateShipping })(Cart)
+export default Cart

@@ -1,10 +1,10 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import Product from '../groups/Product'
 
-const Mall = props => {
-  const { products } = props
+const Mall = () => {
+  const products = useSelector(state => state.products)
   const productList = products.map(elem => (
     <Product
       key={elem.id}
@@ -18,8 +18,4 @@ const Mall = props => {
   return <div className="mall">{productList}</div>
 }
 
-const mapStateToProps = ({ products }) => {
-  return { products }
-}
-
-export default connect(mapStateToProps)(Mall)
+export default Mall

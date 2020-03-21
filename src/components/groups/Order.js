@@ -1,48 +1,33 @@
-import React, { useState } from 'react'
-import { connect } from 'react-redux'
-import {
-  updateOrderQty,
-  updateOrderTag,
-  deleteOrder
-} from '../../actions'
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import { updateOrderQty, updateOrderTag, deleteOrder } from '../../actions'
 import QtyControl from '../crews/QtyControl'
 
-const Order = props => {
-  let {
-    id,
-    title,
-    price,
-    qty,
-    tag,
-    updateOrderQty,
-    updateOrderTag,
-    deleteOrder
-  } = props
+const Order = ({ id, title = 'Some Tea', price = 0, qty = 1, tag = '' }) => {
+  const dispatch = useDispatch()
 
   //=======================init START==========================
-  title = title ? title : 'Some Tea'
-  price = price > 0 ? price : 0
-  // 單品數量最低1，最高100
-  qty = qty > 0 && qty <= 100 ? Math.floor(qty) : 1
-  // notes = notes ? notes : ''
   const subtotal = qty * price
 
+  //=======================event handler==========================
+  const onClickDelete = evt => {
+    evt.preventDefault()
+    dispatch(deleteOrder(id))
+  }
+
   const onQtyChange = (id, qty) => {
-    updateOrderQty(id, qty)
+    dispatch(updateOrderQty(id, qty))
   }
   const onTagChange = evt => {
     evt.preventDefault()
-    updateOrderTag(id, evt.target.value)
+    dispatch(updateOrderTag(id, evt.target.value))
   }
 
   //========================init END===========================
 
   return (
     <div key={id} className="order">
-      <button
-        className="order__remove"
-        onClick={deleteOrder.bind(this, id)}
-      ></button>
+      <button className="order__remove" onClick={onClickDelete}></button>
       <h3 className="order__name">{title}</h3>
       <span className="order__price">${price}</span>
       <div className="order__qty-control">
@@ -61,12 +46,4 @@ const Order = props => {
   )
 }
 
-const mapStateToProps = state => {
-  return {}
-}
-
-export default connect(mapStateToProps, {
-  updateOrderQty,
-  updateOrderTag,
-  deleteOrder
-})(Order)
+export default Order
